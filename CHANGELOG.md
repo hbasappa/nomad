@@ -10,6 +10,7 @@ __BACKWARDS INCOMPATIBILITIES:__
  * csi: The `attachment_mode` and `access_mode` field are required for `volume` blocks in job specifications. Registering a volume requires at least one `capability` block with the `attachment_mode` and `access_mode` fields set. [[GH-10330](https://github.com/hashicorp/nomad/issues/10330)]
 
 IMPROVEMENTS:
+ * api: Added an API endpoint for fuzzy search queries [[GH-10184](https://github.com/hashicorp/nomad/pull/10184)]
  * api: Removed unimplemented `CSIVolumes.PluginList` API. [[GH-10158](https://github.com/hashicorp/nomad/issues/10158)]
  * cli: Update defaults for `nomad operator debug` flags `-interval` and `-server-id` to match common usage. [[GH-10121](https://github.com/hashicorp/nomad/issues/10121)]
  * consul/connect: Enable setting `local_bind_address` field on connect upstreams [[GH-6248](https://github.com/hashicorp/nomad/issues/6248)]
