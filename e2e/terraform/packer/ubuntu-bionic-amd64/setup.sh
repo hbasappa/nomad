@@ -43,6 +43,8 @@ sudo chown root:root /usr/local/bin/sockaddr
 # Disable the firewall
 sudo ufw disable || echo "ufw not installed"
 
+
+# TODO YOU ARE HERE
 echo "Install Consul"
 curl -fsL -o /tmp/consul.zip \
      "https://releases.hashicorp.com/consul/${CONSULVERSION}/consul_${CONSULVERSION}_linux_amd64.zip"
