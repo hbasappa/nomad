@@ -269,6 +269,9 @@ type ClientConfig struct {
 	// ServerJoin contains information that is used to attempt to join servers
 	ServerJoin *ServerJoin `hcl:"server_join"`
 
+	// NodeID is the uuid of this server.
+	NodeID string `hcl:"node_id"`
+
 	// HostVolumes contains information about the volumes an operator has made
 	// available to jobs running on this node.
 	HostVolumes []*structs.ClientHostVolumeConfig `hcl:"host_volume"`
@@ -479,6 +482,9 @@ type ServerConfig struct {
 
 	// ServerJoin contains information that is used to attempt to join servers
 	ServerJoin *ServerJoin `hcl:"server_join"`
+
+	// NodeID is the uuid of this server.
+	NodeID string `hcl:"node_id"`
 
 	// DefaultSchedulerConfig configures the initial scheduler config to be persisted in Raft.
 	// Once the cluster is bootstrapped, and Raft persists the config (from here or through API),
@@ -1424,6 +1430,10 @@ func (a *ServerConfig) Merge(b *ServerConfig) *ServerConfig {
 		result.DefaultSchedulerConfig = &c
 	}
 
+	if b.NodeID != "" {
+		result.NodeID = b.NodeID
+	}
+
 	// Add the schedulers
 	result.EnabledSchedulers = append(result.EnabledSchedulers, b.EnabledSchedulers...)
 
@@ -1543,6 +1553,10 @@ func (a *ClientConfig) Merge(b *ClientConfig) *ClientConfig {
 
 	if b.ServerJoin != nil {
 		result.ServerJoin = result.ServerJoin.Merge(b.ServerJoin)
+	}
+
+	if b.NodeID != "" {
+		result.NodeID = b.NodeID
 	}
 
 	if len(a.HostVolumes) == 0 && len(b.HostVolumes) != 0 {

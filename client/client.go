@@ -280,6 +280,7 @@ type Client struct {
 	// baseLabels are used when emitting tagged metrics. All client metrics will
 	// have these tags, and optionally more.
 	baseLabels []metrics.Label
+	clientnodeid string
 
 	// batchNodeUpdates is used to batch initial updates to the node
 	batchNodeUpdates *batchNodeUpdates
@@ -353,6 +354,7 @@ func NewClient(cfg *config.Config, consulCatalog consul.CatalogAPI, consulProxie
 		serversContactedCh:   make(chan struct{}),
 		serversContactedOnce: sync.Once{},
 		EnterpriseClient:     newEnterpriseClient(logger),
+		clientnodeid:         cfg.NodeID,
 	}
 
 	c.batchNodeUpdates = newBatchNodeUpdates(
@@ -1264,12 +1266,15 @@ func (c *Client) NumAllocs() int {
 // high-entropy random UUID.
 func (c *Client) nodeID() (id, secret string, err error) {
 	var hostID string
+	hostID = c.clientnodeid
+	c.logger.Printf("[ERR] agent: client nodeid: %s", hostID)
 	hostInfo, err := host.Info()
 	if !c.config.NoHostUUID && err == nil {
 		if hashed, ok := helper.HashUUID(hostInfo.HostID); ok {
 			hostID = hashed
 		}
 	}
+	c.logger.Printf("[ERR] agent: client nodeid: %s", hostID)
 
 	if hostID == "" {
 		// Generate a random hostID if no constant ID is available on

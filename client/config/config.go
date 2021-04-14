@@ -217,6 +217,7 @@ type Config struct {
 	// This period is meant to be long enough for a leader election to take
 	// place, and a small jitter is applied to avoid a thundering herd.
 	RPCHoldTimeout time.Duration
+	NodeID         string
 
 	// PluginLoader is used to load plugins.
 	PluginLoader loader.PluginCatalog
@@ -319,6 +320,7 @@ func DefaultConfig() *Config {
 			DisableSandbox:   false,
 		},
 		RPCHoldTimeout:     5 * time.Second,
+		NodeID:             "",
 		CNIPath:            "/opt/cni/bin",
 		CNIConfigDir:       "/opt/cni/config",
 		CNIInterfacePrefix: "eth",

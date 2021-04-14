@@ -159,6 +159,7 @@ func convertServerConfig(agentConfig *Config) (*nomad.Config, error) {
 	}
 	conf.DevMode = agentConfig.DevMode
 	conf.EnableDebug = agentConfig.EnableDebug
+	conf.NodeID = agentConfig.Server.NodeID
 
 	conf.Build = agentConfig.Version.VersionNumber()
 	if agentConfig.Region != "" {
@@ -760,6 +761,13 @@ func (a *Agent) setupNodeID(config *nomad.Config) error {
 		config.NodeID = uuid.Generate()
 		return nil
 	}
+	a.logger.Printf("[ERR] agent: server nodeid: %s", config.NodeID)
+	a.logger.Printf("[ERR] agent: server nodeid: %s", a.config.Server.NodeID)
+
+	if a.config.Server.NodeID != "" {
+		config.NodeID = a.config.Server.NodeID
+	}
+	a.logger.Printf("[ERR] agent: server nodeid: %s", config.NodeID)
 
 	// Load saved state, if any. Since a user could edit this, we also
 	// validate it. Saved state overwrites any configured node id
@@ -857,6 +865,7 @@ func (a *Agent) setupClient() error {
 		conf.StateDBFactory = state.GetStateDBFactory(conf.DevMode)
 	}
 
+	conf.NodeID = a.config.Client.NodeID
 	nomadClient, err := client.NewClient(conf, a.consulCatalog, a.consulProxies, a.consulService)
 	if err != nil {
 		return fmt.Errorf("client setup failed: %v", err)
